@@ -5,6 +5,7 @@ import domain.User;
 import domain.Person;
 import domain.Role;
 
+import javax.swing.*;
 import java.util.*;
 
 public class UserService  {
@@ -63,10 +64,10 @@ public class UserService  {
     // zmieniłam z Listy na TreeSeta??? Nie udało mi się tego jakoś posortować przez Colections.sort()???
     public static TreeSet<Permission> getSortedPermissionsOfUsersWithNameStartingWithA(List<User> users) {
 
-        List<Permission> permissinsOfUsersWhithNameStartingWithA = null;
+        List<Permission> permissinsOfUsersWhithNameStartingWithA = new ArrayList<>();
         for (User user : users) {
             if (user.getName().startsWith("A"));
-           permissinsOfUsersWhithNameStartingWithA = user.getPersonDetails().getRole().getPermissions();
+           permissinsOfUsersWhithNameStartingWithA.add ((Permission) user.getPersonDetails().getRole().getPermissions());
         }
         TreeSet sortedPermissinsOfUsersWhithNameStartinsWithA = new TreeSet<>(permissinsOfUsersWhithNameStartingWithA);
 
@@ -75,6 +76,11 @@ public class UserService  {
 
     public static void printCapitalizedPermissionNamesOfUsersWithSurnameStartingWithS(List<User> users) {
 
+        String capitalizedPermissionNamesOfUsersWithSurnameWithS;
+        for (User user: users){
+            if ( user.getPersonDetails().getSurname().startsWith("S"));
+           capitalizedPermissionNamesOfUsersWithSurnameWithS =  user.getPersonDetails().getRole().getName().toUpperCase();
+        }
 
     }
 
