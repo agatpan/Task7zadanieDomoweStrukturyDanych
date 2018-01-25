@@ -5,7 +5,6 @@ import domain.User;
 import domain.Person;
 import domain.Role;
 
-import javax.swing.*;
 import java.util.*;
 
 public class UserService  {
@@ -67,7 +66,7 @@ public class UserService  {
         List<Permission> permissinsOfUsersWhithNameStartingWithA = new ArrayList<>();
         for (User user : users) {
             if (user.getName().startsWith("A"));
-           permissinsOfUsersWhithNameStartingWithA.add ((Permission) user.getPersonDetails().getRole().getPermissions());
+           permissinsOfUsersWhithNameStartingWithA.add((Permission) user.getPersonDetails().getRole().getPermissions());
         }
         TreeSet sortedPermissinsOfUsersWhithNameStartinsWithA = new TreeSet<>(permissinsOfUsersWhithNameStartingWithA);
 
@@ -84,12 +83,19 @@ public class UserService  {
 
     }
 
-    public static Map<Role, List<User>> groupUsersByRole(List<User> users) {
+    public static Map<Role, User> groupUsersByRole(List<User> users) {
 
-        return null;
+        Map<Role, User> usersByRole = new HashMap<>();
+        for (User user : users){
+            usersByRole.put(user.getPersonDetails().getRole(), user);
+        }
+
+        return usersByRole;
     }
 
     public static Map<Boolean, List<User>> partitionUserByUnderAndOver18(List<User> users) {
+
+
 
         return null;
     }
