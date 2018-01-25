@@ -126,7 +126,7 @@ public class Task7 {
         System.out.println(UserService.findUserWithLongestUsername(users));
         System.out.println(UserService.getNamesAndSurnamesCommaSeparatedOfAllUsersAbove18(users));
         System.out.println(users.get(1).getPersonDetails().getRole().getPermissions());
-       // System.out.println(UserService.getSortedPermissionsOfUsersWithNameStartingWithA(users));
+        System.out.println(UserService.getSortedPermissionsOfUsersWithNameStartingWithA(users));
         System.out.println(UserService.groupUsersByRole(users));
         System.out.println(UserService.partitionUserByUnderAndOver18(users));
     }

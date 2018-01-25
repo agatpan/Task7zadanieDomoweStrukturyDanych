@@ -2,7 +2,7 @@ package domain;
 
 import java.util.List;
 
-public class User  {
+public class User   {
 
     private String name;
     private String password;
@@ -43,4 +43,9 @@ public class User  {
                 ", personDetails =" + personDetails +
                 '}';
     }
+
+
+
+
+
 }
