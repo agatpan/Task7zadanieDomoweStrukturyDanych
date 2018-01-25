@@ -93,11 +93,24 @@ public class UserService  {
         return usersByRole;
     }
 
-    public static Map<Boolean, List<User>> partitionUserByUnderAndOver18(List<User> users) {
+    public static Map<Boolean, User> partitionUserByUnderAndOver18(List<User> users) {
+
+        Map<Boolean, User> usersUnderAndOver18 = new HashMap<>();
+
+        for (User user :users){
 
 
+            if (user.getPersonDetails().getAge() > 18 ){
+                boolean over18 = true;
+               usersUnderAndOver18.put(over18, user);
+            }
+            else{
+               boolean over18= false;
+               usersUnderAndOver18.put(over18, user);}
+        }
 
-        return null;
+
+        return usersUnderAndOver18;
     }
 
 
