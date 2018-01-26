@@ -61,12 +61,12 @@ public class UserService  {
     }
 
     // zmieniłam z Listy na TreeSeta??? Nie udało mi się tego jakoś posortować przez Colections.sort()???
-    public static TreeSet<Permission> getSortedPermissionsOfUsersWithNameStartingWithA(List<User> users) {
+    public static TreeSet<List<Permission>> getSortedPermissionsOfUsersWithNameStartingWithA(List<User> users) {
 
-        TreeSet<Permission> sortedPermissinsOfUsersWhithNameStartinsWithA = new TreeSet<>();
+        TreeSet<List<Permission>> sortedPermissinsOfUsersWhithNameStartinsWithA = new TreeSet<>();
         for (User user : users) {
             if (user.getName().startsWith("A"));
-           sortedPermissinsOfUsersWhithNameStartinsWithA.add((Permission)user.getPersonDetails().getRole().getPermissions());
+           sortedPermissinsOfUsersWhithNameStartinsWithA.add(user.getPersonDetails().getRole().getPermissions());
         }
 
 
