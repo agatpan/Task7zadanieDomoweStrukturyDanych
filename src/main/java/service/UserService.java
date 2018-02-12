@@ -7,111 +7,97 @@ import domain.Role;
 
 import java.util.*;
 
-public class UserService  {
+public class UserService {
 
     public static List<User> findUsersWhoHaveMoreThanOneAddress(List<User> users) {
-
-        List<User> usersWhoHaveMoreThanOneAdress = new ArrayList<>();
-        for (User user : users){
-            if (user.getPersonDetails().getAddresses().size() > 1){
-                usersWhoHaveMoreThanOneAdress.add(user);
+        List<User> listaOdfiltrowana = new ArrayList<>();
+        for (User user : users) {
+            if (user.getPersonDetails().getAddresses().size() > 1) {
+                listaOdfiltrowana.add(user);
             }
         }
-        return usersWhoHaveMoreThanOneAdress;
+
+        return listaOdfiltrowana;
     }
 
     public static Person findOldestPerson(List<User> users) {
-
-        Person theOldestPerson = users.get(0).getPersonDetails();
+        Person person = users.get(0).getPersonDetails();
         for (User user : users) {
-
-            if (user.getPersonDetails().getAge() > theOldestPerson.getAge()) {
-                theOldestPerson = user.getPersonDetails();
+            if (user.getPersonDetails().getAge() > person.getAge()) {
+                person = user.getPersonDetails();
             }
-
         }
-
-        return theOldestPerson;
+        return person;
     }
 
     public static User findUserWithLongestUsername(List<User> users) {
-
-       User userWithLongestUsername = users.get(0);
-        for (User user : users){
-            if (user.getName().length() > userWithLongestUsername.getName().length()){
+        User userWithLongestUsername = users.get(0);
+        for (User user : users) {
+            if (userWithLongestUsername.getName().length() < user.getName().length()) {
                 userWithLongestUsername = user;
-
             }
         }
-
         return userWithLongestUsername;
     }
 
-    // zamieniałam tutaj zmiena se Stringa na Listę Stringów??? skoro moge posiadac więcej niż jednego dorosłego
-    public static List<String> getNamesAndSurnamesCommaSeparatedOfAllUsersAbove18(List<User> users) {
-
-        List<String> nameAndSurnameUsersAbove18 = new ArrayList<>();
-        for (User user : users){
-            if (user.getPersonDetails().getAge() > 18){
-                nameAndSurnameUsersAbove18.add(user.getPersonDetails().getName() + ", " + user.getPersonDetails().getSurname());
+    public static String getNamesAndSurnamesCommaSeparatedOfAllUsersAbove18(List<User> users) {
+        StringBuilder names = new StringBuilder();
+        for (User user : users) {
+            if (user.getPersonDetails().getAge() > 18) {
+                Person person = user.getPersonDetails();
+                names.append(person.getName()).append(",").append(person.getSurname()).append(",");
             }
         }
-
-        return nameAndSurnameUsersAbove18;
+        return names.toString();
     }
 
-    // zmieniłam z Listy na TreeSeta??? Nie udało mi się tego jakoś posortować przez Colections.sort()???
-    public static TreeSet<List<Permission>> getSortedPermissionsOfUsersWithNameStartingWithA(List<User> users) {
-
-        TreeSet<List<Permission>> sortedPermissinsOfUsersWhithNameStartinsWithA = new TreeSet<>();
+    public static List<String> getSortedPermissionsOfUsersWithNameStartingWithA(List<User> users) {
+        TreeSet<String> permissions = new TreeSet<>();
         for (User user : users) {
-            if (user.getName().startsWith("A"));
-           sortedPermissinsOfUsersWhithNameStartinsWithA.add(user.getPersonDetails().getRole().getPermissions());
+            if (user.getName().toLowerCase().startsWith("a")) {
+                for (Permission permission : user.getPersonDetails().getRole().getPermissions()) {
+                    permissions.add(permission.getName());
+                }
+            }
         }
-
-
-        return sortedPermissinsOfUsersWhithNameStartinsWithA;
+        return new ArrayList<>(permissions);
     }
 
     public static void printCapitalizedPermissionNamesOfUsersWithSurnameStartingWithS(List<User> users) {
-
-        String capitalizedPermissionNamesOfUsersWithSurnameWithS;
-        for (User user: users){
-            if ( user.getPersonDetails().getSurname().startsWith("S"));
-           capitalizedPermissionNamesOfUsersWithSurnameWithS =  user.getPersonDetails().getRole().getName().toUpperCase();
-        }
-
-    }
-
-    public static Map<Role, User> groupUsersByRole(List<User> users) {
-
-        Map<Role, User> usersByRole = new HashMap<>();
-        for (User user : users){
-            usersByRole.put(user.getPersonDetails().getRole(), user);
-        }
-
-        return usersByRole;
-    }
-
-    public static Map<Boolean, User> partitionUserByUnderAndOver18(List<User> users) {
-
-        Map<Boolean, User> usersUnderAndOver18 = new HashMap<>();
-
-        for (User user :users){
-
-
-            if (user.getPersonDetails().getAge() > 18 ){
-                boolean over18 = true;
-               usersUnderAndOver18.put(over18, user);
+        List<String> permissions = new ArrayList<>();
+        for (User user : users) {
+            if (user.getPersonDetails().getSurname().toLowerCase().startsWith("s")) {
+                for (Permission permission : user.getPersonDetails().getRole().getPermissions()) {
+                    permissions.add(permission.getName().toUpperCase());
+                }
             }
-            else{
-               boolean over18= false;
-               usersUnderAndOver18.put(over18, user);}
         }
-
-
-        return usersUnderAndOver18;
+        System.out.println(permissions);
     }
 
+    public static Map<Role, List<User>> groupUsersByRole(List<User> users) {
+        Map<Role, List<User>> groupedUsers = new HashMap<>();
+        for (User user : users) {
+            groupedUsers.computeIfAbsent(user.getPersonDetails().getRole(), k -> new ArrayList<>());
+            groupedUsers.get(user.getPersonDetails().getRole()).add(user);
+            groupedUsers.put(user.getPersonDetails().getRole(), groupedUsers.get(user.getPersonDetails().getRole()));
+        }
+        return groupedUsers;
+    }
 
+    public static Map<Boolean, List<User>> partitionUserByUnderAndOver18(List<User> users) {
+        Map<Boolean,List<User>> groupedUsers = new HashMap<>();
+        for (User user : users){
+            if(user.getPersonDetails().getAge() >= 18){
+                groupedUsers.computeIfAbsent(true, k -> new ArrayList<>());
+                groupedUsers.get(true).add(user);
+                groupedUsers.put(true,groupedUsers.get(true));
+            } else {
+                groupedUsers.computeIfAbsent(false, k -> new ArrayList<>());
+                groupedUsers.get(false).add(user);
+                groupedUsers.put(false,groupedUsers.get(false));
+            }
+        }
+        return groupedUsers;
+    }
 }

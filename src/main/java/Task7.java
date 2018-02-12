@@ -1,6 +1,7 @@
 import domain.*;
 import service.UserService;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -120,6 +121,7 @@ public class Task7 {
 
 
         // cd tworzenia listy
+
 
         System.out.println(UserService.findUsersWhoHaveMoreThanOneAddress(users));
         System.out.println(UserService.findOldestPerson(users));
