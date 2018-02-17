@@ -20,6 +20,8 @@ public class UserService {
         return listaOdfiltrowana;
     }
 
+
+
     public static Person findOldestPerson(List<User> users) {
         Person person = users.get(0).getPersonDetails();
         for (User user : users) {
@@ -29,6 +31,8 @@ public class UserService {
         }
         return person;
     }
+
+    ;
 
     public static User findUserWithLongestUsername(List<User> users) {
         User userWithLongestUsername = users.get(0);
