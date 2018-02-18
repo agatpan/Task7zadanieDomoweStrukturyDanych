@@ -3,12 +3,15 @@ import domain.*;
 
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
-import org.junit.Before;
+
 import org.junit.Test;
 import service.UserService;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
+
 
 public class UserServiceTests {
 
@@ -16,124 +19,172 @@ public class UserServiceTests {
 
     @Test
     public  void userShouldHaveMoreThanOneAddresses() {
-        User user = new User().setPersonDetails(new Person().setAddresses(Lists.newArrayList(new Address(), new Address())));
 
-       Assert.assertTrue(user.getPersonDetails().getAddresses().size() > 1 );
+        List<User> userList = new ArrayList<>();
+        User user1 = new User().setPersonDetails(new Person().setAddresses(Lists.newArrayList(new Address(), new Address())));
+        User user2 = new User().setPersonDetails(new Person().setAddresses(Lists.newArrayList(new Address())));
+        userList.add(user1);
+        userList.add(user2);
+
+        assertTrue(UserService.findUsersWhoHaveMoreThanOneAddress(userList).size()!=0);
     }
 
     @Test
-    public  void userWhoHaveOnoAddress(){
-        User user = new User().setPersonDetails(new Person().setAddresses(Lists.newArrayList(new Address())));
+    public  void userWhoHaveOneAddress(){
+        List<User> userList = new ArrayList<>();
+        User user1 = new User().setPersonDetails(new Person().setAddresses(Lists.newArrayList(new Address())));
+        User user2 = new User().setPersonDetails(new Person().setAddresses(Lists.newArrayList(new Address())));
+        userList.add(user1);
+        userList.add(user2);
 
-        Assert.assertFalse(user.getPersonDetails().getAddresses().size() > 1);
+        Assert.assertFalse(UserService.findUsersWhoHaveMoreThanOneAddress(userList).size()!=0);
 
     }
 
     @Test
     public void userShouldBeTheOldest() {
-        User user = new User().setPersonDetails(new Person().setAge(90));
+        List<User> userList = new ArrayList<>();
+        User user1 = new User().setPersonDetails(new Person().setAge(90));
+        User user2 = new User().setPersonDetails(new Person().setAge(18));
+        User user3 = new User().setPersonDetails(new Person().setAge(5));
+        User user4 = new User().setPersonDetails(new Person().setAge(45));
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
 
-        Assert.assertEquals( true, user.getPersonDetails().getAge() > 80);
+        Assert.assertEquals( true, UserService.findOldestPerson(userList).getAge() > 60);
     }
     @Test
-    public void userShouldBeZero() {
-        User user = new User().setPersonDetails(new Person().setAge(0));
+    public void userAgeShouldBeZero() {
+        List<User> userList = new ArrayList<>();
+        User user1 = new User().setPersonDetails(new Person().setAge(90));
+        User user2 = new User().setPersonDetails(new Person().setAge(0));
+        User user3 = new User().setPersonDetails(new Person().setAge(5));
+        User user4 = new User().setPersonDetails(new Person().setAge(15));
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
 
-        Assert.assertFalse((user.getPersonDetails().getAge() != 0));
+        Assert.assertFalse((UserService.findOldestPerson(userList).getAge() == 0));
     }
 
     @Test
     public void userWithTheLongestUserName() {
-        User user = new User().setName("Wierzchosława");
+        List<User> userList = new ArrayList<>();
+        User user1 = new User().setName("Grzegorz");
+        User user2 = new User().setName("Ola");
+        User user3 = new User().setName("Krzysztof");
+        User user4 = new User().setName("Wierzchosława");
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
 
-        Assert.assertTrue(user.getName().length() > 10);
+        assertTrue(UserService.findUserWithLongestUsername(userList).getName().length() > 10);
     }
 
     @Test
-    public void  userWithTheShortestName(){
-        User userm = new User().setName("1");
+    public void  userWithTheLongestNameAssertThat(){
+        List<User> userList = new ArrayList<>();
+        User user1 = new User().setName("Grzegorz");
+        User user2 = new User().setName("Ola");
+        User user3 = new User().setName("L");
+        User user4 = new User().setName("Wierzchosława");
 
-        Assert.assertTrue(userm.getName().length()<= 1);
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
+
+        assertThat(UserService.findUserWithLongestUsername(userList).getName()).isEqualTo("Wierzchosława");
 
     }
 
     @Test
     public void userWhoIsAbove18(){
-        User user =new User().setPersonDetails(new Person().setAge(19));
 
-        Assert.assertTrue(user.getPersonDetails().getAge() >18);
+        List<User> userList = new ArrayList<>();
+        User user1 = new User().setPersonDetails(new Person().setAge(90));
+        User user2 = new User().setPersonDetails(new Person().setAge(57));
+        User user3 = new User().setPersonDetails(new Person().setAge(10));
+        User user4 = new User().setPersonDetails(new Person().setAge(25));
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
+
+        Map<Boolean,List<User>> groupedUsers = UserService.partitionUserByUnderAndOver18(userList);
+
+        assertThat(groupedUsers.get(false)).hasSize(1);
+        assertThat(groupedUsers.get(true)).hasSize(3);
     }
-
-    @Test
-    public void userWhoIsUnder18(){
-        User user1 = new User().setPersonDetails(new Person().setAge(17));
-        User user2 = new User().setPersonDetails(new Person().setAge(18));
-
-        Assert.assertFalse(user1.getPersonDetails().getAge()>18);
-        Assert.assertEquals(18, user2.getPersonDetails().getAge());
-    }
-
 
 
     @Test
     public void checkIfAnyUserNameStartedWithA  () {
-        User user1 = new User().setPersonDetails(new Person().setName("A%"));
-        User user2 = new User().setPersonDetails(new Person().setName("Kasia"));
 
-        Assert.assertTrue(user1.getPersonDetails().getName().toLowerCase().startsWith("a"));
-        Assert.assertFalse(user2.getPersonDetails().getName().toLowerCase().startsWith("a"));
+        List<User> userList = new ArrayList<>();
+        User user1 = new User().setName("Ala").setPersonDetails(new Person().setRole(new Role().setPermissions(new ArrayList<>(Arrays.asList(new Permission().setName("z1"))))));
+        User user2 = new User().setName("Krztsztof").setPersonDetails(new Person().setRole(new Role().setPermissions(new ArrayList<>(Arrays.asList(new Permission().setName("z1"), new Permission().setName("z2"))))));
+        User user3 = new User().setName("Adam").setPersonDetails(new Person().setRole(new Role().setPermissions(new ArrayList<>(Arrays.asList(new Permission().setName("z3"), new Permission().setName("z4"))))));
+        User user4 = new User().setName("Kasia").setPersonDetails(new Person().setRole(new Role().setPermissions(new ArrayList<>(Arrays.asList(new Permission().setName("z2"))))));
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
+
+
+        assertEquals(true, UserService.getSortedPermissionsOfUsersWithNameStartingWithA(userList).contains("z3"));
+        assertFalse(UserService.getSortedPermissionsOfUsersWithNameStartingWithA(userList).contains("z2"));
     }
 
 
 
     @Test
     public void checkIfAnySurnameStartsWithS() {
-        User user = new User().setPersonDetails(new Person().setSurname("S%"));
-        User user1 = new User().setPersonDetails(new Person().setSurname("Kowalski"));
+        List<User> userList = new ArrayList<>();
+        userList.add(new User().setPersonDetails(new Person().setSurname("Kowalski").setRole(new Role().setPermissions(Arrays.asList(new Permission().setName("z1"), new Permission().setName("z3"), new Permission().setName("z4"))))));
+        userList.add(new User().setPersonDetails(new Person().setSurname("Schmidt").setRole(new Role().setPermissions(Arrays.asList(new Permission().setName("z2"), new Permission().setName("z3"))))));
+        userList.add(new User().setPersonDetails(new Person().setSurname("Sur").setRole(new Role().setPermissions(Arrays.asList(new Permission().setName("z1"))))));
+        userList.add(new User().setPersonDetails(new Person().setSurname("Nowak").setRole(new Role().setPermissions(Arrays.asList(new Permission().setName("z5"), new Permission().setName("z2"))))));
 
-        Assert.assertTrue(user.getPersonDetails().getSurname().toLowerCase().startsWith("s"));
-        Assert.assertFalse(user1.getPersonDetails().getSurname().toLowerCase().startsWith("s"));
+        UserService.printCapitalizedPermissionNamesOfUsersWithSurnameStartingWithS(userList);
     }
+
 
 
 
     @Test
-    public void ifUserIsUnder18(){
-       User user1 = new User().setPersonDetails(new Person().setAge(4));
-       User user2 = new User().setPersonDetails(new Person().setAge(19));
-
-       Assert.assertTrue(user1.getPersonDetails().getAge()<18);
-       Assert.assertFalse(user2.getPersonDetails().getAge()<18);
-
-    }
-
-   /* @Test
 
     public void shouldReturnGroupedUsersByRole() {
+        List<User> userList = new ArrayList<>();
         Role role1 = new Role().setName("r1");
         Role role2 = new Role().setName("r2");
         Role role3 = new Role().setName("r3");
-
         User user1 = new User().setPersonDetails(new Person().setRole(role1));
         User user2 = new User().setPersonDetails(new Person().setRole(role2));
         User user3 = new User().setPersonDetails(new Person().setRole(role3));
         User user4 = new User().setPersonDetails(new Person().setRole(role3));
         User user5 = new User().setPersonDetails(new Person().setRole(role1));
+        User user6 = new User().setPersonDetails(new Person().setRole(role3));
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+        userList.add(user4);
+        userList.add(user5);
+        userList.add(user6);
 
-        Map<Role, User> usersByRole = new HashMap<>();
-        usersByRole.put(role1, user1);
-        usersByRole.put(role1, user5);
-        usersByRole.put(role2, user2);
-        usersByRole.put(role3, user3);
-        usersByRole.put(role3, user4);
+        Map<Role,List<User>> groupedUsers = UserService.groupUsersByRole(userList);
 
-        Assert.assertEquals(true, usersByRole.containsKey(role1).size() = 2);
+        assertThat(groupedUsers.get(role1)).hasSize(2);
+        assertThat(groupedUsers.get(role2)).hasSize(1);
+        assertThat(groupedUsers.get(role3)).hasSize(3);
 
 
 
-
-
-    }*/
+    }
 
 
 
