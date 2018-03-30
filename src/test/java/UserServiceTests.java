@@ -37,7 +37,8 @@ public class UserServiceTests {
         userList.add(user1);
         userList.add(user2);
 
-        Assert.assertFalse(UserService.findUsersWhoHaveMoreThanOneAddress(userList).size()!=0);
+        assertTrue(UserService.findUsersWhoHaveMoreThanOneAddress(userList).size()==1);
+        assertTrue(UserService.findUsersWhoHaveMoreThanOneAddress(userList).get(0).equals(user1));
 
     }
 
@@ -53,10 +54,10 @@ public class UserServiceTests {
         userList.add(user3);
         userList.add(user4);
 
-        Assert.assertEquals( true, UserService.findOldestPerson(userList).getAge() > 60);
+        assertEquals( true, UserService.findOldestPerson(userList).getAge()==90);
     }
     @Test
-    public void userAgeShouldBeZero() {
+    public void userAgeShouldNotBeZero() {
         List<User> userList = new ArrayList<>();
         User user1 = new User().setPersonDetails(new Person().setAge(90));
         User user2 = new User().setPersonDetails(new Person().setAge(0));
@@ -82,7 +83,7 @@ public class UserServiceTests {
         userList.add(user3);
         userList.add(user4);
 
-        assertTrue(UserService.findUserWithLongestUsername(userList).getName().length() > 10);
+        assertTrue(UserService.findUserWithLongestUsername(userList).getName().equals("Wierzchosława"));
     }
 
     @Test
