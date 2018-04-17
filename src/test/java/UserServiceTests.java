@@ -36,9 +36,8 @@ public class UserServiceTests {
         User user2 = new User().setPersonDetails(new Person().setAddresses(Lists.newArrayList(new Address())));
         userList.add(user1);
         userList.add(user2);
-
-        assertTrue(UserService.findUsersWhoHaveMoreThanOneAddress(userList).size()==1);
-        assertTrue(UserService.findUsersWhoHaveMoreThanOneAddress(userList).get(0).equals(user1));
+        assertTrue(UserService.findUsersWhoHaveMoreThanOneAddress  (userList).size()==1);
+        assertThat(UserService.findUsersWhoHaveMoreThanOneAddress(userList).get(0).getPersonDetails().getAddresses().equals(1));
 
     }
 
