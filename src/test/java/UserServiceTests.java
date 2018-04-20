@@ -32,7 +32,7 @@ public class UserServiceTests {
     @Test
     public  void userWhoHaveOneAddress(){
         List<User> userList = new ArrayList<>();
-        User user1 = new User().setPersonDetails(new Person().setAddresses(Lists.newArrayList(new Address())));
+        User user1 = new User().setPersonDetails(new Person().setAddresses(Lists.newArrayList(new Address(), new Address())));
         User user2 = new User().setPersonDetails(new Person().setAddresses(Lists.newArrayList(new Address())));
         userList.add(user1);
         userList.add(user2);
